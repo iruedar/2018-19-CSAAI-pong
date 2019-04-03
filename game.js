@@ -7,41 +7,60 @@ function main()
     canvas.height = 400;
 
     var ctx = canvas.getContext("2d");
+    var x1 = 50;
+    var y1 = 100;
+    var x2 = 500;
+    var y2 = 100;
 
-    //-- Raquetas
-    ctx.fillStyle = 'white';
-    ctx.fillRect(50,100, 10, 40);
-    ctx.fillStyle = 'white';
-    ctx.fillRect(500,300, 10, 40);
+    function background(Width, Height) {
+      this.width = Width,
+      this.height = Height,
+      this.ctx = null,
 
-    // Red
-    ctx.beginPath();
-    ctx.setLineDash([5,10]);
-    ctx.lineWidth = "5";
-    ctx.strokeStyle = "white";
-    ctx.moveTo(canvas.width/2, 0);
-    ctx.lineTo(canvas.width/2, 400);
-    ctx.stroke();
+      this.init = function (ctx){
+          this.ctx = ctx
+      }
+      this.draw = function () {
+          // Red
+          ctx.beginPath();
+          ctx.setLineDash([5,10]);
+          ctx.lineWidth = "5";
+          ctx.strokeStyle = "white";
+          ctx.moveTo(this.width/2, 0);
+          ctx.lineTo(this.width/2, 400);
+          ctx.stroke();
 
-    //Puntuación
-    ctx.font = "60px Arial";
-    ctx.fillStyle = "red";
-    ctx.textAlign = "center";
-    ctx.fillText("0", canvas.width/2-30, 50);
-    ctx.fillText("0", canvas.width/2+30, 50);
+          //Puntuación
+          ctx.font = "60px Arial";
+          ctx.fillStyle = "red";
+          ctx.textAlign = "center";
+          ctx.fillText("0", this.width/2-30, 50);
+          ctx.fillText("0", this.width/2+30, 50);
+      }
+    }
 
     //Objeto Raquetas
-    var pala = {
-        width: 10,
-        height: 40,
-        ctx: null,
-        init: function(ctx){
-            this.ctx = ctx;
-        },
-        draw: function(){
-            this.ctx.fillStyle = "white";
-            this.ctx.fillRect(50,100, this.width, this.height);
-            this.ctx.fillRect(500,100, this.width, this.height);
+    function raqueta (x, y){
+        this.x_ini = x
+        this.y_ini = y
+        this.width = 10
+        this.height = 40
+        this.ctx = null
+
+        this.init = function(ctx){
+            this.ctx = ctx
+            this.reset()
+        }
+        this.draw = function(){
+            this.ctx.fillStyle = "green"
+            this.ctx.fillRect(this.x,this.y, this.width, this.height)
+        }
+        this.update = function(){
+          // No hay movimiento
+        }
+        this.reset = function() {
+          this.x = this.x_ini;
+          this.y = this.y_ini;
         }
     }
 
@@ -83,9 +102,21 @@ function main()
         }
     }
 
-    //-- Inicializar y pintar la bola
+
+    //-- Inicializar y pintar
+    var jugador1 = new raqueta(x1, y1);
+    var jugador2 = new raqueta(x2, y2);
+    var tablero = new background(canvas.width, canvas.height)
+
+    tablero.init(ctx)
     bola.init(ctx)
+    jugador1.init(ctx)
+    jugador2.init(ctx)
     bola.draw()
+    jugador1.draw()
+    jugador2.draw()
+    tablero.draw()
+
     //-- Crear timer para la animación
     //-- Inicialmente a null
     var timer = null;
@@ -103,10 +134,15 @@ function main()
                 //-- Esto se ejecuta cada 20ms
                 //-- Actualizar la bola
                 bola.update();
+                jugador1.update()
+                jugador2.update()
                 //-- Borrar el canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 //-- Dibuar la bola
-                bola.draw();
+                tablero.draw()
+                bola.draw()
+                jugador1.draw()
+                jugador2.draw()
                 //-- Si la bola llega a la parte derecha del canvas:
                 //-- Terminar
                 if (bola.x > canvas.width) {
