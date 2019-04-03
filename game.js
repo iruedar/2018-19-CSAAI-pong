@@ -46,6 +46,8 @@ function main()
         this.width = 10
         this.height = 40
         this.ctx = null
+        this.vy = 4
+        this.direction = null
 
         this.init = function(ctx){
             this.ctx = ctx
@@ -53,10 +55,14 @@ function main()
         }
         this.draw = function(){
             this.ctx.fillStyle = "green"
-            this.ctx.fillRect(this.x,this.y, this.width, this.height)
+            this.ctx.fillRect(this.x, this.y, this.width, this.height)
         }
         this.update = function(){
-          // No hay movimiento
+            if(this.direction == "up"){
+                this.y = this.y - this.vy
+            }else if (this.direction == "down") {
+                this.y = this.y + this.vy
+            }
         }
         this.reset = function() {
           this.x = this.x_ini;
@@ -102,7 +108,6 @@ function main()
         }
     }
 
-
     //-- Inicializar y pintar
     var jugador1 = new raqueta(x1, y1);
     var jugador2 = new raqueta(x2, y2);
@@ -143,6 +148,24 @@ function main()
                 bola.draw()
                 jugador1.draw()
                 jugador2.draw()
+
+                //Movimiento palas
+                window.onkeydown = (e) => {
+                    e.preventDefault()
+                    if(e.key == "ArrowUp"){
+                        jugador1.direction = "up";
+                    }else if (e.key == "ArrowDown") {
+                        jugador1.direction = "down"
+                    }else if(e.key == "w"){
+                        jugador2.direction = "up";
+                    }else if (e.key == "s") {
+                        jugador2.direction = "down"
+                    }
+                }
+
+                window.onkeyup = (e) => {
+
+                }
                 //-- Si la bola llega a la parte derecha del canvas:
                 //-- Terminar
                 if (bola.x > canvas.width) {
