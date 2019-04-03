@@ -1,35 +1,51 @@
 function main()
 {
-  console.log("Pong: Main: Start!")
+    console.log("Pong: Main: Start!")
 
-  var canvas = document.getElementById('display')
-  canvas.width = 600;
-  canvas.height = 400;
+    var canvas = document.getElementById('display')
+    canvas.width = 600;
+    canvas.height = 400;
 
-  var ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext("2d");
 
-  //-- Raquetas
-  ctx.fillStyle = 'white';
-  ctx.fillRect(50,100, 10, 40)
-  ctx.fillStyle = 'white';
-  ctx.fillRect(500,300, 10, 40)
+    //-- Raquetas
+    ctx.fillStyle = 'white';
+    ctx.fillRect(50,100, 10, 40);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(500,300, 10, 40);
 
-  // Red
-  ctx.beginPath();
-  ctx.setLineDash([5,10]);
-  ctx.lineWidth = "5";
-  ctx.strokeStyle = "white";
-  ctx.moveTo(canvas.width/2, 0);
-  ctx.lineTo(canvas.width/2, 400)
-  ctx.stroke();
+    // Red
+    ctx.beginPath();
+    ctx.setLineDash([5,10]);
+    ctx.lineWidth = "5";
+    ctx.strokeStyle = "white";
+    ctx.moveTo(canvas.width/2, 0);
+    ctx.lineTo(canvas.width/2, 400);
+    ctx.stroke();
 
-  //Puntuación
-  ctx.font = "60px Arial";
-  ctx.fillStyle = "red";
-  ctx.fillText("0", 240, 50);
-  ctx.fillText("0", 330, 50);
+    //Puntuación
+    ctx.font = "60px Arial";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "center";
+    ctx.fillText("0", canvas.width/2-30, 50);
+    ctx.fillText("0", canvas.width/2+30, 50);
 
-  //Objeto bola
+    //Objeto Raquetas
+    var pala = {
+        width: 10,
+        height: 40,
+        ctx: null,
+        init: function(ctx){
+            this.ctx = ctx;
+        },
+        draw: function(){
+            this.ctx.fillStyle = "white";
+            this.ctx.fillRect(50,100, this.width, this.height);
+            this.ctx.fillRect(500,100, this.width, this.height);
+        }
+    }
+
+    //Objeto bola
     var bola = {
         //-- Posición inicial de la pelota
         x_ini: 50,
