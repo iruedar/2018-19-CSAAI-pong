@@ -16,6 +16,8 @@ function main()
         this.width = Width
         this.height = Height
         this.ctx = null
+        this.puntos1 = 0
+        this.puntos2 = 0
 
         this.init = function (ctx){
             this.ctx = ctx
@@ -34,8 +36,12 @@ function main()
             ctx.font = "60px Arial";
             ctx.fillStyle = "red";
             ctx.textAlign = "center";
-            ctx.fillText("0", this.width/2-30, 50);
-            ctx.fillText("0", this.width/2+30, 50);
+            ctx.fillText(this.puntos1, this.width/2-30, 50);
+            ctx.fillText(this.puntos2, this.width/2+30, 50);
+        }
+        this.reset = function(){
+            this.puntos1 = 0
+            this.puntos2 = 0
         }
     }
 
@@ -190,7 +196,13 @@ function main()
                 }
 
                 //-- Si la bola llega a la parte derecha del canvas:
-                //-- Terminar
+                if (bola.x > canvas.width - bola.width){
+                    bola.vx = -bola.vx;
+                    tablero.puntos1 += 1;
+                }else if (bola.x < bola.width) {
+                    bola.vx = -bola.vx;
+                    tablero.puntos2 += 1;
+                }
                 if (bola.x > canvas.width) {
                     //-- Eliminar el timer
                     clearInterval(timer)
