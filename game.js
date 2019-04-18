@@ -75,7 +75,7 @@ function main()
     function pelota(h) {
         //-- Posición inicial de la pelota
         this.x_ini = 50
-        this.y_ini = 200
+        this.y_ini = 150
         //-- Dimensiones de la Bola
         this.width = 5
         this.height = 5
@@ -103,6 +103,9 @@ function main()
         this.update = function () {
             this.x += this.vx;
             this.y += this.vy;
+            if(this.y < this.height || this.y > this.altura - this.height){
+                this.vy = -this.vy;
+            }
         }
         //-- Reset: Set the ball to the initial state
         this.reset = function() {
@@ -157,19 +160,33 @@ function main()
                 window.onkeydown = (e) => {
                     e.preventDefault()
                     if(e.key == "ArrowUp"){
-                        jugador1.vy = -2
+                        jugador1.vy = -3
                     }else if (e.key == "ArrowDown") {
-                        jugador1.vy = 2
+                        jugador1.vy = 3
                     }else if(e.key == "w"){
-                        jugador2.vy = -2
+                        jugador2.vy = -3
                     }else if (e.key == "s") {
-                        jugador2.vy = 2
+                        jugador2.vy = 3
                     }
                 }
 
                 window.onkeyup = (e) => {
                     jugador1.vy = 0
                     jugador2.vy = 0
+                }
+
+                // Choque con primera Raqueta
+                if (bola.x >= jugador1.x && bola.x <= jugador1.x + jugador1.width){
+                    if(bola.y >= jugador1.y && bola.y <= jugador1.y + jugador1.height){
+                        bola.vx = -bola.vx;
+                    }
+                }
+
+                //Choque con segunda Raqueta
+                if (bola.x >= jugador2.x && bola.x <= jugador2.x + jugador2.width){
+                    if(bola.y >= jugador2.y && bola.y <= jugador2.y + jugador2.height){
+                        bola.vx = -bola.vx;
+                    }
                 }
 
                 //-- Si la bola llega a la parte derecha del canvas:
