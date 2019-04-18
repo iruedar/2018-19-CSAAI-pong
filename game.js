@@ -8,46 +8,46 @@ function main()
 
     var ctx = canvas.getContext("2d");
     var x1 = 50;
-    var y1 = 100;
+    var y1 = 200;
     var x2 = 500;
-    var y2 = 100;
+    var y2 = 200;
 
     function background(Width, Height) {
-      this.width = Width,
-      this.height = Height,
-      this.ctx = null,
+        this.width = Width
+        this.height = Height
+        this.ctx = null
 
-      this.init = function (ctx){
-          this.ctx = ctx
-      }
-      this.draw = function () {
-          // Red
-          ctx.beginPath();
-          ctx.setLineDash([5,10]);
-          ctx.lineWidth = "5";
-          ctx.strokeStyle = "white";
-          ctx.moveTo(this.width/2, 0);
-          ctx.lineTo(this.width/2, 400);
-          ctx.stroke();
+        this.init = function (ctx){
+            this.ctx = ctx
+        }
+        this.draw = function () {
+            // Red
+            ctx.beginPath();
+            ctx.setLineDash([5,10]);
+            ctx.lineWidth = "5";
+            ctx.strokeStyle = "white";
+            ctx.moveTo(this.width/2, 0);
+            ctx.lineTo(this.width/2, 400);
+            ctx.stroke();
 
-          //Puntuación
-          ctx.font = "60px Arial";
-          ctx.fillStyle = "red";
-          ctx.textAlign = "center";
-          ctx.fillText("0", this.width/2-30, 50);
-          ctx.fillText("0", this.width/2+30, 50);
-      }
+            //Puntuación
+            ctx.font = "60px Arial";
+            ctx.fillStyle = "red";
+            ctx.textAlign = "center";
+            ctx.fillText("0", this.width/2-30, 50);
+            ctx.fillText("0", this.width/2+30, 50);
+        }
     }
 
     //Objeto Raquetas
-    function raqueta (x, y){
+    function raqueta (x, y, h){
         this.x_ini = x
         this.y_ini = y
         this.width = 10
         this.height = 40
         this.ctx = null
-        this.vy = 4
-        this.direction = null
+        this.vy = 0
+        this.altura = h
 
         this.init = function(ctx){
             this.ctx = ctx
@@ -58,10 +58,11 @@ function main()
             this.ctx.fillRect(this.x, this.y, this.width, this.height)
         }
         this.update = function(){
-            if(this.direction == "up"){
-                this.y = this.y - this.vy
-            }else if (this.direction == "down") {
-                this.y = this.y + this.vy
+            this.y += this.vy
+            if(this.y < 0){
+                this.y = 0
+            }else if(this.y > this.altura - this.height){
+                this.y = this.altura - this.height
             }
         }
         this.reset = function() {
@@ -71,46 +72,49 @@ function main()
     }
 
     //Objeto bola
-    var bola = {
+    function pelota(h) {
         //-- Posición inicial de la pelota
-        x_ini: 50,
-        y_ini: 50,
+        this.x_ini = 50
+        this.y_ini = 200
         //-- Dimensiones de la Bola
-        width: 5,
-        height: 5,
+        this.width = 5
+        this.height = 5
         //-- Coornenadas
-        x : 0,
-        y : 0,
+        this.x = 0
+        this.y = 0
         //-- Velocidad
-        vx : 4,
-        vy : 1,
+        this.vx = 4
+        this.vy = 1
         //-- Contexto
-        ctx: null,
+        this.ctx = null
+        //-- Altura canvas
+        this.altura = h
         //-- Inicializar la bola
-        init: function(ctx) {
+        this.init = function(ctx) {
             this.ctx = ctx;
             this.reset();
-        },
+        }
         //-- Dibujar
-        draw: function () {
+        this.draw = function () {
             this.ctx.fillStyle = 'white';
             this.ctx.fillRect(this.x, this.y, this.width, this.height)
-        },
+        }
         //-- Update
-        update: function () {
+        this.update = function () {
             this.x += this.vx;
             this.y += this.vy;
-        },
+        }
         //-- Reset: Set the ball to the initial state
-        reset: function() {
+        this.reset = function() {
             this.x = this.x_ini;
             this.y = this.y_ini;
         }
     }
 
     //-- Inicializar y pintar
-    var jugador1 = new raqueta(x1, y1);
-    var jugador2 = new raqueta(x2, y2);
+    var bola = new pelota(canvas.height)
+    var jugador1 = new raqueta(x1, y1, canvas.height);
+    var jugador2 = new raqueta(x2, y2, canvas.height);
     var tablero = new background(canvas.width, canvas.height)
 
     tablero.init(ctx)
@@ -153,19 +157,21 @@ function main()
                 window.onkeydown = (e) => {
                     e.preventDefault()
                     if(e.key == "ArrowUp"){
-                        jugador1.direction = "up";
+                        jugador1.vy = -2
                     }else if (e.key == "ArrowDown") {
-                        jugador1.direction = "down"
+                        jugador1.vy = 2
                     }else if(e.key == "w"){
-                        jugador2.direction = "up";
+                        jugador2.vy = -2
                     }else if (e.key == "s") {
-                        jugador2.direction = "down"
+                        jugador2.vy = 2
                     }
                 }
 
                 window.onkeyup = (e) => {
-
+                    jugador1.vy = 0
+                    jugador2.vy = 0
                 }
+
                 //-- Si la bola llega a la parte derecha del canvas:
                 //-- Terminar
                 if (bola.x > canvas.width) {
