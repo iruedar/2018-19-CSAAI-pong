@@ -9,7 +9,7 @@ function main()
     var ctx = canvas.getContext("2d");
     var x1 = 50;
     var y1 = 200;
-    var x2 = 500;
+    var x2 = 550;
     var y2 = 200;
 
     function background(Width, Height) {
@@ -54,6 +54,7 @@ function main()
         this.ctx = null
         this.vy = 0
         this.altura = h
+        this.speed = 1
 
         this.init = function(ctx){
             this.ctx = ctx
@@ -64,7 +65,7 @@ function main()
             this.ctx.fillRect(this.x, this.y, this.width, this.height)
         }
         this.update = function(){
-            this.y += this.vy
+            this.y += this.vy * this.speed;
             if(this.y < 0){
                 this.y = 0
             }else if(this.y > this.altura - this.height){
@@ -95,6 +96,7 @@ function main()
         this.ctx = null
         //-- Altura canvas
         this.altura = h
+        this.speed = 1
         //-- Inicializar la bola
         this.init = function(ctx) {
             this.ctx = ctx;
@@ -107,8 +109,8 @@ function main()
         }
         //-- Update
         this.update = function () {
-            this.x += this.vx;
-            this.y += this.vy;
+            this.x += this.vx * this.speed;
+            this.y += this.vy * this.speed;
             if(this.y < this.height || this.y > this.altura - this.height){
                 this.vy = -this.vy;
             }
@@ -119,6 +121,40 @@ function main()
             this.y = this.y_ini;
         }
     }
+    function saque (sacar,jugador1,jugador2, bola){
+        if (sacar == 1) {
+            bola.x_ini = 550;
+        }else if (sacar == 2) {
+            bola.x_ini = 50;
+        }
+        bola.reset();
+        jugador1.reset();
+        jugador2.reset();
+        bola.draw();
+        jugador1.draw();
+        jugador2.draw();
+    }
+    function select_difficulty(jugador1, jugador2, bola){
+        var level = document.getElementById("option1").value;
+        switch (level) {
+          case "1":
+              bola.speed = 0.5;
+              jugador1.speed = 3;
+              jugador2.speed = 3;
+              break;
+          case "2":
+              bola.speed = 1;
+              jugador1.speed = 4;
+              jugador2.speed = 4;
+              break;
+          case "3":
+              bola.speed = 2;
+              jugador1.speed = 6;
+              jugador2.speed = 6;
+              break;
+        }
+    }
+
 
     //-- Inicializar y pintar
     var bola = new pelota(canvas.height)
@@ -151,6 +187,8 @@ function main()
             timer = setInterval(()=>{
                 //-- Esto se ejecuta cada 20ms
                 //-- Actualizar la bola
+                select_difficulty(jugador1, jugador2, bola);
+                console.log(select_difficulty)
                 bola.update();
                 jugador1.update()
                 jugador2.update()
@@ -166,13 +204,13 @@ function main()
                 window.onkeydown = (e) => {
                     e.preventDefault()
                     if(e.key == "ArrowUp"){
-                        jugador1.vy = -3
+                        jugador1.vy = -1
                     }else if (e.key == "ArrowDown") {
-                        jugador1.vy = 3
+                        jugador1.vy = 1
                     }else if(e.key == "w"){
-                        jugador2.vy = -3
+                        jugador2.vy = -1
                     }else if (e.key == "s") {
-                        jugador2.vy = 3
+                        jugador2.vy = 1
                     }
                 }
 
@@ -187,7 +225,6 @@ function main()
                         bola.vx = -bola.vx;
                     }
                 }
-
                 //Choque con segunda Raqueta
                 if (bola.x >= jugador2.x && bola.x <= jugador2.x + jugador2.width){
                     if(bola.y >= jugador2.y && bola.y <= jugador2.y + jugador2.height){
@@ -198,19 +235,26 @@ function main()
                 //-- Si la bola llega a la parte derecha del canvas:
                 if (bola.x > canvas.width - bola.width){
                     bola.vx = -bola.vx;
+                    saque(1, jugador1, jugador2, bola);
                     tablero.puntos1 += 1;
                 }else if (bola.x < bola.width) {
                     bola.vx = -bola.vx;
+                    saque(2, jugador1, jugador2, bola);
                     tablero.puntos2 += 1;
                 }
-                if (bola.x > canvas.width) {
-                    //-- Eliminar el timer
+                if (tablero.puntos1 == 7 || tablero.puntos2 == 7) {
                     clearInterval(timer)
                     timer = null;
-                    //-- Bola a su posicion inicial
+                    bola.x_ini = 50;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     bola.reset();
-                    //-- Dibujar la bola en pos. inicial
+                    jugador1.reset();
+                    jugador2.reset();
+                    tablero.reset();
+                    jugador1.draw();
+                    jugador2.draw();
                     bola.draw();
+                    tablero.draw();
                 }
             },20); //-- timer
         }
