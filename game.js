@@ -1,6 +1,5 @@
 function main()
 {
-    console.log("Pong: Main: Start!")
 
     var canvas = document.getElementById('display')
     canvas.width = 600;
@@ -11,6 +10,7 @@ function main()
     var y1 = 200;
     var x2 = 550;
     var y2 = 200;
+    var max_score = 8;
 
     function background(Width, Height) {
         this.width = Width
@@ -135,7 +135,7 @@ function main()
         jugador2.draw();
     }
     function select_difficulty(jugador1, jugador2, bola){
-        var level = document.getElementById("option1").value;
+        var level = document.getElementById("option").value;
         switch (level) {
           case "1":
               bola.speed = 0.5;
@@ -154,7 +154,6 @@ function main()
               break;
         }
     }
-
 
     //-- Inicializar y pintar
     var bola = new pelota(canvas.height)
@@ -242,7 +241,7 @@ function main()
                     saque(2, jugador1, jugador2, bola);
                     tablero.puntos2 += 1;
                 }
-                if (tablero.puntos1 == 7 || tablero.puntos2 == 7) {
+                if (tablero.puntos1 == max_score || tablero.puntos2 == max_score) {
                     clearInterval(timer)
                     timer = null;
                     bola.x_ini = 50;

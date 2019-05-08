@@ -7,14 +7,21 @@
     <script src="game.js"> </script>
   </head>
   <body onload="main();">
-   <p>Mi juego del pong...</p>
-   <canvas id="display"></canvas>
-   <br>
-   <button type="button" id="sacar">Sacar</button>
-   <select id="option1">
-    <option value="1">EASY</option>
-    <option value="2">NORMAL</option>
-    <option value="3">HARD</option>
-   </select>
+     <div id="instructions">
+          <p>Instructions:  </p>
+          <p>El primero en llegar a 8 gana <p>
+          <p>Player 1: W and S. </p>
+          <p>Player 2: Arrow Up and Arrow Down.</p>
+     </div>
+     <canvas id="display"></canvas>
+     <br>
+     <div id="options">
+         <button type="button" id="sacar">Sacar</button>
+         <select id="option">
+          <option value="1">EASY</option>
+          <option value="2">NORMAL</option>
+          <option value="3">HARD</option>
+         </select>
+      </div>
   </body>
 </html>
