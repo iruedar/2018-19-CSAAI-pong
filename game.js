@@ -159,25 +159,29 @@ function main()
     var bola = new pelota(canvas.height)
     var jugador1 = new raqueta(x1, y1, canvas.height);
     var jugador2 = new raqueta(x2, y2, canvas.height);
-    var tablero = new background(canvas.width, canvas.height)
+    var tablero = new background(canvas.width, canvas.height);
 
-    tablero.init(ctx)
-    bola.init(ctx)
-    jugador1.init(ctx)
-    jugador2.init(ctx)
-    bola.draw()
-    jugador1.draw()
-    jugador2.draw()
-    tablero.draw()
+    var sacar = document.getElementById('sacar');
+    sacar.onclick = ()=>{  movement(); }
+    window.onkeydown = (e) => {
+      e.preventDefault();
+      //Numero del espacio para poder sacar dando al espacio o boton sacar
+      if(e.keyCode == '32'){  movement(); }
+    }
 
-    //-- Crear timer para la animación
-    //-- Inicialmente a null
-    var timer = null;
-    //-- Boton de salcar
-    var sacar = document.getElementById('sacar')
-    //-- Función de retrollamda del botón de sacar.
-    //-- ¡Que comience la animación!
-    sacar.onclick = () => {
+    function movement(){
+        tablero.init(ctx)
+        bola.init(ctx)
+        jugador1.init(ctx)
+        jugador2.init(ctx)
+        bola.draw()
+        jugador1.draw()
+        jugador2.draw()
+        tablero.draw()
+
+        //-- Crear timer para la animación
+        //-- Inicialmente a null
+        var timer = null;
         //-- Si la bola ya se está animando,
         //-- no hacer nada
         if (!timer) {
@@ -257,5 +261,5 @@ function main()
                 }
             },20); //-- timer
         }
-    } //-- Fin onclick
+    }
 }
